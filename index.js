@@ -1,130 +1,128 @@
-const express = require("express")
-const shortid = require("shortid")
-const server = express()
-
+const express = require("express");
+const shortid = require("shortid");
+const server = express();
 server.get("/", (req, res) => {
-	res.json({ api: " Api is running " })
-})
+	res.json({ api: " Api is running " });
+});
+server.use(express.json());
 
-server.use(express.json())
 
-let games = [
+
+let users = [
 	{
 		id: 1,
-		name: "Mass effect",
-		bio:
-			"Super soldier takes on alien cuddlefish death robots and wins maybe",
+		name: "Roland",
+		bio: "Six shooting main chacter from a book by stehen king",
 	},
 	{
 		id: 2,
-		name: " halo ",
-		bio: "Super soldier takes on alien armada and wins",
+		name: " Comander shepard ",
+		bio: "N7 soldier from the masseffect universe ",
 	},
 	{
 		id: 3,
-		name: "Apex Legends",
-		bio: "Battle Royal game about Legends fighting to the death",
+		name: "Pathfinder",
+		bio: "Sentient robot that is useing the apex games to find his creater ",
 	},
 	{
 		id: 4,
-		name: "Skyrim",
-		bio:
-			"free roam andbox rpg based around human that can absorb dragon soals",
+		name: "Master Chief",
+		bio: "super soldier designed in the spartan11 program",
 	},
-]
+];
 
 //get requests
 
-server.get("/api/games", (req, res) => {
-	games
-		? res.status(200).json(games)
+server.get("/api/users", (req, res) => {
+	users
+		? res.status(200).json(users)
 		: res.status(500).json({
-				errorMessage: "the game info could not be retrieved.",
-		  })
-})
+			errorMessage: "the users info could not be retrieved.",
+		});
+});
 
-server.get("/api/games/id", (req, res) => {
-	const reqId = Number(req.params.id)
-	const reqGames = games.filter((games) => games.id == reqId)
+server.get("/api/users/:id", (req, res) => {
+	const reqId = Number(req.params.id);
+	const reqUser = users.filter((user) => user.id == reqId);
 
 	res.status(200)
-		.json(reqGames)
+		.json(reqUser)
 		.catch((err) => {
 			console.log("error", err)
-			res.status(500).json({ error: "failed to find game " })
-		})
-})
+			res.status(500).json({ error: "failed to find user " });
+		});
+});
 
 // post request
 
-server.post("/api/games", (req, res) => {
-	const gameInfo = req.body
+server.post("/api/users", (req, res) => {
+	const userInfo = req.body;
 
-	if (!gameInfo.name || !gameInfo.bio) {
+	if (!userInfo.name || !userInfo.bio) {
 		res.status(400).json({
-			errorMessage: "needs game name and bio.",
-		})
+			errorMessage: "needs user name and bio.",
+		});
 	} else {
-		games.push(gameInfo)
-			? res.status(201).json(gameInfo)
+		users.push(userInfo)
+			? res.status(201).json(userInfo)
 			: res.status(500).json({
-					errorMessage: "Server Error 500",
-			  })
+				errorMessage: "Server Error 500",
+			});
 	}
-})
+});
 
 //delete requests
 
-server.delete("/api/games/:id", (req, res) => {
-	const id = Number(req.params.id)
-	const game = games.find((e) => e.id === id)
+server.delete("/api/users/:id", (req, res) => {
+	const id = Number(req.params.id);
+	const user = users.find((e) => e.id === id);
 
-	if (game) {
-		games = games.filter((game) => game / id !== id)
-		const deleted = games.find((e) => e.id === id)
+	if (user) {
+		users = users.filter((user) => user / id !== id);
+		const deleted = users.find((e) => e.id === id);
 		!deleted
-			? res.status(200).json(game)
+			? res.status(200).json(user)
 			: res.status(500).json({
-					errorMessage: "error when deleting",
-			  })
+				errorMessage: "error when deleting",
+			});
 	} else {
 		res.status(404).json({
-			errorMessage: "the game with the specific id does not exist",
-		})
+			errorMessage: "the user with the specific id does not exist",
+		});
 	}
-})
+});
 
 // patch request
 
-server.patch("/api/games/:id", (req, res) => {
-	const gameInfo = req.body
-	const id = Number(req.params.id)
+server.patch("/api/users/:id", (req, res) => {
+	const userInfo = req.body
+	const id = Number(req.params.id);
 
-	if (!gameInfo.name || !gameInfo.bio) {
+	if (!userInfo.name || !userInfo.bio) {
 		res.status(400).json({
-			errorMessage: "provide a game and bio",
-		})
+			errorMessage: "provide a user and bio",
+		});
 	} else {
-		const game = game.find((e) => e.id === id)
+		const user = users.find((e) => e.id === id);
 
-		if (game) {
-			games = gmaes.map((game) => {
-				return game.id === id ? { id, ...gameInfo } : game
-			})
-			const updatedGame = games.find((e) => {
+		if (user) {
+			users = users.map((user) => {
+				return user.id === id ? { id, ...userInfo } : user;
+			});
+			const updatedUser = users.find((e) => {
 				return e.id === id
-			})
-			updatedGame
-				? res.status(200).json(updatedGame)
+			});
+			updatedUsers
+				? res.status(200).json(updatedUser)
 				: res.status(500).json({
-						errorMessage: "cannot modify game info",
-				  })
+					errorMessage: "cannot modify user info",
+				});
 		} else {
 			res.status(404).json({
-				errorMessage: " cannont find game by ID.",
-			})
+				errorMessage: " cannont find user by ID.",
+			});
 		}
 	}
-})
+});
 
-server.listen(8000, () => console.log("\n == API running  == \n"))
+server.listen(8000, () => console.log("\n == API running  == \n"));
