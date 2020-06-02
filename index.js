@@ -1,6 +1,7 @@
 const express = require("express");
 const shortid = require("shortid");
 const server = express();
+
 server.get("/", (req, res) => {
 	res.json({ api: " Api is running " });
 });
